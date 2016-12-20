@@ -511,6 +511,24 @@ Partial Public Class ELN_RFQL1
     Protected WithEvents lblDaysVal As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
+    '''lblClientYieldToIB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblClientYieldToIB As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtClientYieldToIB control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtClientYieldToIB As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
     '''tabPanelFCN control.
     '''</summary>
     '''<remarks>
@@ -3857,6 +3875,24 @@ Partial Public Class ELN_RFQL1
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents drpConfirmDeal As Global.Telerik.Web.UI.RadDropDownList
+
+    '''<summary>
+    '''trAdvisoryReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trAdvisoryReason As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''ddlAdvisoryReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlAdvisoryReason As Global.Telerik.Web.UI.RadDropDownList
 
     '''<summary>
     '''grdRMData control.

@@ -393,6 +393,9 @@ Partial Public Class ELN_RFQL1
             '/Mohit Lalwani on 27-Sept-2016
 
 
+ 
+
+
 
 
             If Page.IsPostBack = False Then
@@ -499,7 +502,7 @@ Partial Public Class ELN_RFQL1
                         tblRowSelectionExchangeELN.Visible = True
                         tblRowDisplayExchangeELN.Visible = False
                 End Select
-                
+
                 Select Case objReadConfig.ReadConfig(dsConfig, "EQC_AllowPoolCreation_From_Pricer", "ELN", CStr(LoginInfoGV.Login_Info.EntityID), "NO").Trim.ToUpper()
                     Case "Y", "YES"
                         'sEQC_DealerLoginGroups = objReadConfig.ReadConfig(dsConfig, "EQC_DealerLoginGroups", "ELN", CStr(LoginInfoGV.Login_Info.EntityID), "NONE")
@@ -508,8 +511,8 @@ Partial Public Class ELN_RFQL1
                         'If sEQC_DealerLoginGroups.Split(CChar(",")).ToList().IndexOf(sLoginGrp) > -1 Then
                         If UCase(Request.QueryString("Mode")) = "ALL" Then
                             grdELNRFQ.Columns(grdELNRFQEnum.CreatePool).Visible = True
-                           
-                            Else
+
+                        Else
                             grdELNRFQ.Columns(grdELNRFQEnum.CreatePool).Visible = False
                         End If
                     Case "N", "NO"
@@ -581,7 +584,7 @@ Partial Public Class ELN_RFQL1
                 Get_Price_Provider()
                 fill_All_Exchange()
                 fill_KO() ''Dilkhush 13May2016 FA1427
-		''Rushikesh 14Jan2016:- For Share load on lazyload
+                ''Rushikesh 14Jan2016:- For Share load on lazyload
                 '' fill_All_Shares()
                 Fillddl_QuantoCcy()
                 setKeyPressValidations()
@@ -613,8 +616,8 @@ Partial Public Class ELN_RFQL1
                 btnBAMLDeal.Visible = False
                 btnJPMDeal.Visible = False
                 btnDBIBDeal.Visible = False
-		btnOCBCDeal.Visible = False
-		btnCITIDeal.Visible = False
+                btnOCBCDeal.Visible = False
+                btnCITIDeal.Visible = False
                 btnLEONTEQDeal.Visible = False
                 btnCOMMERZDeal.Visible = False
                 lblQuantity.Text = "Notional (<font style=''>" & lblELNBaseCcy.Text & "</font>)"
@@ -633,7 +636,7 @@ Partial Public Class ELN_RFQL1
                         lblCSLimit.Text = "N.A."
                         lblBAMLlimit.Text = "N.A."
                         lblDBIBLimit.Text = "N.A."
-			lblOCBClimit.Text = "N.A."
+                        lblOCBClimit.Text = "N.A."
                         lblCITIlimit.Text = "N.A."
                         lblLEONTEQlimit.Text = "N.A."
                         lblCOMMERZlimit.Text = "N.A."
@@ -645,7 +648,7 @@ Partial Public Class ELN_RFQL1
                         lblCSLimit.ToolTip = ""
                         lblBAMLlimit.ToolTip = ""
                         lblDBIBLimit.ToolTip = ""
-			lblOCBClimit.ToolTip = ""
+                        lblOCBClimit.ToolTip = ""
                         lblCITIlimit.ToolTip = ""
                         lblLEONTEQlimit.ToolTip = ""
                         lblCOMMERZlimit.ToolTip = ""
@@ -661,10 +664,10 @@ Partial Public Class ELN_RFQL1
                         ''    sMailButoonVisibilityJS.AppendLine("hideEmail();")
                         ''ElseIf ddlShare.SelectedItem.Value = "" Then
                         ''    sMailButoonVisibilityJS.AppendLine("hideEmail();")
-                       '' Else
+                        '' Else
                         ''    sMailButoonVisibilityJS.AppendLine("showEmail();")
                         ''End If
-			''Rushikesh 14Jan2016:- For Share load on lazyload
+                        ''Rushikesh 14Jan2016:- For Share load on lazyload
                         If ddlShare.SelectedValue IsNot Nothing Then
                             If ddlShare.SelectedValue = "" Then
                                 sMailButoonVisibilityJS.AppendLine("try{ hideEmail(); } catch(e){ }")
@@ -700,7 +703,7 @@ Partial Public Class ELN_RFQL1
                             Else
                                 txtELNPrice.Text = "97.00"
                             End If
-                        
+
                             ''</Added by rushikesh D. on 21jun16 for HSBC demo>
 
                             If Not IsNothing(Request.QueryString("Strike")) Then
@@ -710,7 +713,7 @@ Partial Public Class ELN_RFQL1
                                 txtStrike.Text = getControlPersonalSetting("Strike", "98.00") 'Mohit Lalwani on 8-Sept-2016
                             End If
 
-                            
+
                             If Not IsNothing(Request.QueryString("Share")) Then
                                 Dim strshare As String = Request.QueryString("Share").ToString
                                 dtExchange = New DataTable("Dummy")
@@ -722,7 +725,7 @@ Partial Public Class ELN_RFQL1
 
                                     Case Web_ELNRFQ.Database_Transaction_Response.DB_Unsuccessful
                                 End Select
-                                
+
                                 ' Select objReadConfig.ReadConfig(dsConfig, "EQC_Allow_ALL_AsExchangeOption", "ELN", CStr(LoginInfoGV.Login_Info.EntityID), "YES").Trim.ToUpper
                                 '  Case "Y", "YES"
                                 '        Dim strshare As String = Request.QueryString("Share").ToString
@@ -1158,7 +1161,7 @@ Partial Public Class ELN_RFQL1
             Else
                 txtStrike.Text = ""
                 txtStrike.Enabled = False
-                txtELNPrice.Enabled = True
+                txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016: chnaged from true | for IB calculation>
             End If
             GetCommentary()
         Catch ex As Exception
@@ -1225,6 +1228,7 @@ Partial Public Class ELN_RFQL1
             btnSolveAll.Attributes.Add("onclick", "StopTimer('" + lblUBSTimer.ClientID + "','" + btnUBSDeal.ClientID + "');")
 
             txtClientYieldPopUpValue.Attributes.Add("onkeypress", "AllowNumericWithdecimal('" & txtClientYieldPopUpValue.ClientID & "');") '''DK
+            txtClientYieldToIB.Attributes.Add("onkeypress", "AllowNumericWithFourdecimal('" & txtClientYieldToIB.ClientID & "');") ''<Nikhil M. on 10-Nov-2016: add to calculate IB from Client Yield >
         Catch ex As Exception
             lblerror.Text = "setKeyPressValidations:Error occurred in Processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -3430,7 +3434,7 @@ dr1 = dtLoginPP.Select("PP_CODE = 'OCBC' ")
                 Else
                     txtStrike.Text = "0.00"
                     txtStrike.Enabled = False
-                    txtELNPrice.Enabled = True
+                    txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016: chnaged from true | for IB calculation>
                 End If
                 upnl1.Update()
             End If
@@ -3594,6 +3598,9 @@ dr1 = dtLoginPP.Select("PP_CODE = 'OCBC' ")
             End Select
 
             '</Added By Mohit Lalwnai on 1-Apr-2016 FA-1384>
+
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
+
         Catch ex As Exception
             lblerror.Text = "ddlQuantoCcy_SelectedIndexChanged:Error occurred in processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -3650,13 +3657,18 @@ dr1 = dtLoginPP.Select("PP_CODE = 'OCBC' ")
                 txtELNPrice.Enabled = False
                 txtStrike.Enabled = True
                 txtStrike.BackColor = Color.White
+                txtClientYieldToIB.Visible = False  ''<Nikhil M. on 10-Nov-2016: Added to calculate IB Price | Shilpa P >
+                lblClientYieldToIB.Visible = False ''<Nikhil M. on 10-Nov-2016: Added to calculate IB Price | Shilpa P >
+                txtELNPrice.Enabled = False
             Else
                 txtStrike.Text = "0.00"
-              
+                txtClientYieldToIB.Text = "0.0000" ''<Nikhil M. on 10-Nov-2016: Added to calculate IB Price | Shilpa P >
                 txtStrike.BackColor = Color.FromArgb(242, 242, 243)
                 txtStrike.Enabled = False
-                txtELNPrice.Enabled = True
+                txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016:change from true| Shilpa P >
                 txtELNPrice.BackColor = Color.White
+                txtClientYieldToIB.Visible = True ''<Nikhil M. on 10-Nov-2016: Added to calculate IB Price | Shilpa P >
+                lblClientYieldToIB.Visible = True ''<Nikhil M. on 10-Nov-2016: Added to calculate IB Price | Shilpa P >
             End If
             lblSolveForType.Text = ddlSolveFor.SelectedItem.Text
             ResetAll()                  ''Sequence changed by AshwiniP on 04-Oct-2016
@@ -3732,6 +3744,22 @@ dr1 = dtLoginPP.Select("PP_CODE = 'OCBC' ")
             ResetAll()                ''Sequence Changed by AshwiniP on 04-oct-2016
             GetCommentary()
             hdnSettDateManualChangeYN.Value = "N"
+
+            ''<Added by Rushikesh As told by Sanchita on 5Nov16>
+            Dim sMaxSettDtChange As String = objReadConfig.ReadConfig(dsConfig, "EQC_MaxSettDateChange", "ELN", CStr(LoginInfoGV.Login_Info.EntityID), "10")
+            Dim QuantoCcy As String
+            If chkQuantoCcy.Checked = False Then
+                QuantoCcy = lblELNBaseCcy.Text
+            Else
+                QuantoCcy = ddlQuantoCcy.SelectedValue
+            End If
+            If objELNRFQ.Web_CheckMaxSettDateChange(txtTradeDate.Value, txtSettlementDate.Value, QuantoCcy, sMaxSettDtChange).ToUpper = "FALSE" Then
+                lblerror.ForeColor = Color.Red
+                lblerror.Text = "Difference between trade date and settlement date should not be greater than " + sMaxSettDtChange + " business days"
+                Exit Sub
+            End If
+            ''</Added by Rushikesh As told by Sanchita on 5Nov16>
+
         Catch ex As Exception
             lblerror.Text = "ddlSettlementDays_SelectedIndexChanged:Error occurred in processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -4650,6 +4678,18 @@ dr1 = dtLoginPP.Select("PP_CODE = 'OCBC' ")
             Else
                 chk_DealValidations = True
             End If
+
+            ''<AshwiniP on 10-Nov-16 START>
+            If ddlAdvisoryReason.SelectedValue = "" Then
+                lblerrorPopUp.Text = "Cannot proceed with order. Please select an advisory reason."
+                chk_DealValidations = False
+                Exit Function
+            Else
+                chk_DealValidations = True
+            End If
+
+            ''<END>
+
 
             ''<AshwiniP on 19-Sept-16 START>
             dt = New DataTable("PRRating")
@@ -5835,12 +5875,14 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             sOrderComment = txtOrderCmt.Text.Trim
             ''<Start | Nikhil M. on 16-Sep-2016: Added for Deal confirmation reason>
             Dim strConfirmReason As String = ""
-            'strConfirmReason = drpConfirmDeal.SelectedText.ToString
+            strConfirmReason = drpConfirmDeal.SelectedText.ToString
             ''<End | Nikhil M. on 16-Sep-2016: Added for Deal confirmation reason>
+            Dim strAdvisoryReason As String = ""            ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
+            strAdvisoryReason = ddlAdvisoryReason.SelectedValue.ToString
             Select Case objELNRFQ.web_Get_orderPlaced_with_Margin_Price_Yield(orderQuantity.Replace(",", ""), strType, strLimitPrice1, strLimitPrice2, strLimitPrice3, _
                                                                               strId, sPoolID, sRedirectOrderID, LoginInfoGV.Login_Info.LoginId, sOrderComment, strMargin, strClientPrice, _
                                                                               strClientYield, strBookingBranch, _
-                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, strConfirmReason, strPreTradeXml.ToString) ''<Nikhil M. on 16-Sep-2016: Added "strConfirmReason"  Parameter >
+                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, strConfirmReason, strPreTradeXml.ToString, strAdvisoryReason) ''<Nikhil M. on 16-Sep-2016: Added "strConfirmReason"  Parameter >   ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
                 Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
 
                     lblerror.Text = "Order requested for RFQ " & strId
@@ -5948,6 +5990,7 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
                 GetCommentary()
                 Enable_Disable_Deal_Buttons()
             End If
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
 
         Catch ex As Exception
             lblerror.Text = "txtTenor_TextChanged:Error occurred in processing."
@@ -6170,6 +6213,8 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             GetCommentary()
             lblDaysVal.Text = DateDiff(DateInterval.Day, CDate(Convert.ToString(Session("Settlementdate"))), CDate(Convert.ToString(Session("MaturityDAte")))).ToString '<AvinashG. on 08-Nov-2016:EQSCB-164 Add Number of Days on screen for ELN>
             Session.Add("IsManualDateEditYN", "Y")
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
+
         Catch ex As Exception
             lblerror.Text = "txtMaturityDate_TextChanged:Error occurred in processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -6191,6 +6236,8 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             lblDaysVal.Text = DateDiff(DateInterval.Day, CDate(Convert.ToString(Session("Settlementdate"))), CDate(Convert.ToString(Session("MaturityDAte")))).ToString '<AvinashG. on 08-Nov-2016:EQSCB-164 Add Number of Days on screen for ELN>
             Session.Add("IsManualDateEditYN", "Y")
             hdnSettDateManualChangeYN.Value = "Y"
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
+
         Catch ex As Exception
             lblerror.Text = "txtSettlementDate_TextChanged:Error occurred in processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -6202,6 +6249,8 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
     Private Sub ddlTenorTypeELN_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles ddlTenorTypeELN.SelectedIndexChanged
         Try
             lblerror.Text = ""
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
+
             If ValidateTenor() = False Then   ''AshwiniP on 09-Nov-2016
                 Exit Sub
             Else
@@ -6411,7 +6460,7 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
                         lblSolveForType.Text = "IB Price (%)"
                     Else
                         ddlSolveFor.SelectedValue = "StrikePercentage"
-                        txtELNPrice.Enabled = True
+                        txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016: chnaged from true | for IB calculation>
                         txtELNPrice.BackColor = Color.White
                         txtStrike.Text = "0.00"
                         txtStrike.Enabled = False
@@ -7104,7 +7153,7 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             Dim sMaxSettDtChange As String = objReadConfig.ReadConfig(dsConfig, "EQC_MaxSettDateChange", "ELN", CStr(LoginInfoGV.Login_Info.EntityID), "10")
 
             If hdnSettDateManualChangeYN.Value = "Y" And objELNRFQ.Web_CheckMaxSettDateChange(Trade_Date, txtSettlementDate.Value, QuantoCcy, sMaxSettDtChange).ToUpper = "FALSE" Then
-                lblerror.ForeColor = Color.Blue
+                lblerror.ForeColor = Color.Red
                 lblerror.Text = "Difference between trade date and settlement date should not be greater than " + sMaxSettDtChange + " business days"
                 Chk_validation = False
                 Exit Function
@@ -7412,6 +7461,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnJPMprice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "JPM")
@@ -7465,6 +7518,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnHSBCPrice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "HSBC")
@@ -7516,6 +7573,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnOCBCPrice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "OCBC")
@@ -7567,6 +7628,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCITIPrice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "CITI")
@@ -7618,6 +7683,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnLEONTEQPrice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "LEONTEQ")
@@ -7669,6 +7738,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCOMMERZPrice.Text <> "Order" Then
                 ReCalcDate()
                 Session.Add("hdnPP", "COMMERZ")
@@ -7720,6 +7793,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCSPrice.Text <> "Order" Then
                 If tabContainer.ActiveTabIndex = 0 Then
                     ReCalcDate()
@@ -7774,6 +7851,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnDBIBPrice.Text <> "Order" Then
                 If tabContainer.ActiveTabIndex = 0 Then
                     ReCalcDate()
@@ -7831,6 +7912,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnUBSPrice.Text <> "Order" Then
                 If tabContainer.ActiveTabIndex = 0 Then
                     ReCalcDate()
@@ -8125,6 +8210,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             chkUpfrontOverride.Checked = False
             chkUpfrontOverride.Visible = False
 
+            displayReason() ''<Ashwini P on 10-Nov-2016>
+            fillAdvisoryReasononOrderPopup() ''<Ashwini P on 10-Nov-2016>
+
+
             ' ''<Nikhil M. on 20-Oct-2016: Added for Hide/Visible the Allocation fgrid>
             If IsNothing(Request.QueryString("PoolID")) Then
                 grdRMData.Visible = True
@@ -8145,6 +8234,16 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
 
                 End If
             End If
+
+            If grdRMData.Rows(0).Cells(1).Controls.OfType(Of RadDropDownList)().FirstOrDefault().SelectedValue.Trim = "" Or grdRMData.Rows(0).Cells(1).Controls.OfType(Of RadDropDownList)().FirstOrDefault().SelectedValue.Trim = "&nbsp;" Then
+                Dim FindCustomer As FinIQ_Fast_Find_Customer
+                FindCustomer = CType(grdRMData.Rows(0).FindControl("FindCustomer"), FinIQ_Fast_Find_Customer)
+                FindCustomer.setCustName = ""
+                FindCustomer.HiddenCustomerName = ""
+                FindCustomer.HiddenCustomerId = ""
+                FindCustomer.HiddenDocId = ""
+            End If
+
 
             Return True
         Catch ex As Exception
@@ -8174,6 +8273,11 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
+
             If btnBNPPPrice.Text <> "Order" Then
                 If tabContainer.ActiveTabIndex = 0 Then
                     ReCalcDate()
@@ -8232,6 +8336,10 @@ sSelfPath, "chk_DealValidations", ErrorLevel.Medium)
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnBAMLPrice.Text <> "Order" Then
                 If tabContainer.ActiveTabIndex = 0 Then
                     ReCalcDate()
@@ -9098,6 +9206,8 @@ dr = dtLogin.Select("PP_CODE = '" & "LEONTEQ" & "' ")
             ''</Nikhil M: Added for Calucation of Price on Upfront Change 24Aug16 >
             GetCommentary()
             ''ResetAll()<Nikhil M: Commented for Calucation of Price on Upfront Change 24Aug16 />
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0))) ''<Nikhil M. on 10-Nov-2016: calculate IB price from client yeild>
+
         Catch ex As Exception
             lblerror.Text = "txtUpfrontELN_TextChanged:Error occurred in processing."
             LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
@@ -10792,6 +10902,7 @@ dr = dtLogin.Select("PP_CODE = '" & "LEONTEQ" & "' ")
                             Dim strType As String = dtPoolDetails.Rows(0)(enumPoolDetails.ELNType).ToString.Trim
                             If strType = "Simple" Then ''Added on 14Nov
                                 chkELNType.Checked = False
+
                                 'lblsimpleBarrier.Text = "Simple"
                                 txtBarrier.Enabled = False
                                 ddlBarrier.Enabled = False
@@ -10800,6 +10911,7 @@ dr = dtLogin.Select("PP_CODE = '" & "LEONTEQ" & "' ")
                             Else
 
                                 chkELNType.Checked = True
+
                                 ' lblsimpleBarrier.Text = "Barrier"
                                 txtBarrier.Enabled = True
                                 ddlBarrier.Enabled = True
@@ -10821,6 +10933,8 @@ dr = dtLogin.Select("PP_CODE = '" & "LEONTEQ" & "' ")
                                 Dim strBarrier As String = dtPoolDetails.Rows(0)(enumPoolDetails.BarrierPercentage).ToString.Trim
                                 txtBarrier.Text = strBarrier
                             End If
+
+                            chkELNType_CheckedChanged(Nothing, Nothing) '<RiddhiS. on 12-Nov-2016: To show/hide KO Watch date>
                             Dim strExchng As String = dtPoolDetails.Rows(0)(enumPoolDetails.Exchange).ToString.Trim
                             Dim strShare As String = dtPoolDetails.Rows(0)(enumPoolDetails.Share).ToString.Trim
                             ''Rushikesh 14Jan2016 to set share from pool data
@@ -10971,7 +11085,7 @@ dr = dtLogin.Select("PP_CODE = '" & "LEONTEQ" & "' ")
                             Else
                                 ddlSolveFor.SelectedValue = "StrikePercentage"
                                 ''<Rutuja 25April:Added to enable/disable textbox>
-                                txtELNPrice.Enabled = True
+                                txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016: chnaged from true | for IB calculation>
                                 txtELNPrice.BackColor = Color.White
                                 txtStrike.Text = "0.00"
                                 txtStrike.Enabled = False
@@ -12129,7 +12243,7 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
                     Else
                         ddlSolveFor.SelectedValue = "StrikePercentage"
                         ''<Rutuja 25April:Added to enable/disable textbox>
-                        txtELNPrice.Enabled = True
+                        txtELNPrice.Enabled = False ''<Nikhil M. on 10-Nov-2016: chnaged from true | for IB calculation>
                         txtELNPrice.BackColor = Color.White
                         txtStrike.Text = "0.00"
                         txtStrike.Enabled = False
@@ -12817,6 +12931,51 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
         strHtmlText = strHtmlText.Replace("blueClass", strblueClass)
         strHtmlText = strHtmlText.Replace("graybackClass", strgraybackClass)
 
+
+        Dim xst As Integer = strHtmlText.IndexOf("<--KoMarkerHeader-->")
+        Dim xend As Integer = strHtmlText.IndexOf("<--EndKoMarkerHeader-->")
+        If chkELNType.Checked Then
+            strHtmlText = strHtmlText.Replace("<--KoMarkerHeader-->", String.Empty)
+            strHtmlText = strHtmlText.Replace("<--EndKoMarkerHeader-->", String.Empty)
+        Else
+            xend = xend + "<--EndKoMarkerHeader-->".Length - 1
+            Dim xsub As String = strHtmlText.Substring(xst, (xend - xst) + 1)
+            strHtmlText = strHtmlText.Replace(xsub, String.Empty)
+        End If
+
+        Dim xst2 As Integer = strHtmlText.IndexOf("<--KoMarkerAbsKo-->")
+        Dim xend2 As Integer = strHtmlText.IndexOf("<--EndKoMarkerAbsKo-->")
+        If chkELNType.Checked Then
+            strHtmlText = strHtmlText.Replace("<--KoMarkerAbsKo-->", String.Empty)
+            strHtmlText = strHtmlText.Replace("<--EndKoMarkerAbsKo-->", String.Empty)
+        Else
+            xend2 = xend2 + "<--EndKoMarkerAbsKo-->".Length - 1
+            Dim xsub2 As String = strHtmlText.Substring(xst2, (xend2 - xst2) + 1)
+            strHtmlText = strHtmlText.Replace(xsub2, String.Empty)
+        End If
+
+        Dim xst3 As Integer = strHtmlText.IndexOf("<--KoMarkerBarPer-->")
+        Dim xend3 As Integer = strHtmlText.IndexOf("<--ENDKoMarkerBarPer-->")
+        If chkELNType.Checked Then
+            strHtmlText = strHtmlText.Replace("<--KoMarkerBarPer-->", String.Empty)
+            strHtmlText = strHtmlText.Replace("<--ENDKoMarkerBarPer-->", String.Empty)
+        Else
+            xend3 = xend3 + "<--ENDKoMarkerBarPer-->".Length - 1
+            Dim xsub3 As String = strHtmlText.Substring(xst3, (xend3 - xst3) + 1)
+            strHtmlText = strHtmlText.Replace(xsub3, String.Empty)
+        End If
+
+        Dim xst4 As Integer = strHtmlText.IndexOf("<--KoMarkerTableData-->")
+        Dim xend4 As Integer = strHtmlText.IndexOf("<--ENDKoMarkerTableData-->")
+        If chkELNType.Checked Then
+            strHtmlText = strHtmlText.Replace("<--KoMarkerTableData-->", String.Empty)
+            strHtmlText = strHtmlText.Replace("<--ENDKoMarkerTableData-->", String.Empty)
+        Else
+            xend4 = xend4 + "<--ENDKoMarkerTableData-->".Length - 1
+            Dim xsub4 As String = strHtmlText.Substring(xst4, (xend4 - xst4) + 1)
+            strHtmlText = strHtmlText.Replace(xsub4, String.Empty)
+        End If
+
     End Sub
 
     '23-Nov-2015 Added by Imran/Mangesh for Email best issuer
@@ -13458,8 +13617,8 @@ Private Sub Generate(ByVal DealNO As String)
                     drpConfirmDeal.DataValueField = "Misc1"
                     drpConfirmDeal.DataSource = DtReason
                     drpConfirmDeal.DataBind()
-                    drpConfirmDeal.Items.Insert(0, New DropDownListItem("", ""))
-                    drpConfirmDeal.SelectedIndex = 0
+                    ''drpConfirmDeal.Items.Insert(0, New DropDownListItem("", ""))  ''AshwiniP on 10-Nov-2016
+                    drpConfirmDeal.SelectedIndex = 2            ''Changed to select default value as Best price selected : AshwiniP 11-Nov-2016
                 Case Web_CommonFunction.Database_Transaction_Response.DB_Unsuccessful, Web_CommonFunction.Database_Transaction_Response.Db_No_Data
                     drpConfirmDeal.DataSource = DtReason
                     drpConfirmDeal.DataBind()
@@ -14722,6 +14881,7 @@ Private Sub KYIR_Click(ByVal sender As Object, ByVal e As System.EventArgs) Hand
             tempDt.Rows(I).Item("DocId") = CType(grdRMData.Rows(I).FindControl("FindCustomer"), FinIQ_Fast_Find_Customer).HiddenDocId
             grdRMData.Rows(I).Cells(grdRMDataEnum.Account_Number).Controls.OfType(Of Label)().FirstOrDefault().Text = Customer_Info.CustomerName      'Customer_Info.CustomerName
 
+
             Session.Add("dtELNPreTradeAllocation", tempDt)
 
             ''Commented by PriyaB: 05Nov2016
@@ -14851,5 +15011,97 @@ Private Sub KYIR_Click(ByVal sender As Object, ByVal e As System.EventArgs) Hand
                          sSelfPath, "btnSaveSettings_Click", ErrorLevel.High)
         End Try
 
+    End Sub
+
+    ''<added by Rushikesh on -Nov-2016 :EQSCB-176 - Add advisory resion selection on order confirmation.>
+    Public Sub fillAdvisoryReason()
+        Try
+            Dim DtReason As DataTable
+            DtReason = New DataTable("Dummy")
+            Select Case WebCommonFunction.DB_Get_Common_Data("Advisory_resion", DtReason)
+                Case Web_CommonFunction.Database_Transaction_Response.Db_Successful
+                    ddlAdvisoryReason.DataTextField = "Data_Value"
+                    ddlAdvisoryReason.DataValueField = "Misc1"
+                    ddlAdvisoryReason.DataSource = DtReason
+                    ddlAdvisoryReason.DataBind()
+                    ddlAdvisoryReason.Items.Insert(0, New DropDownListItem("", ""))
+                    ddlAdvisoryReason.SelectedIndex = 0
+                Case Web_CommonFunction.Database_Transaction_Response.DB_Unsuccessful, Web_CommonFunction.Database_Transaction_Response.Db_No_Data
+                    ddlAdvisoryReason.DataSource = DtReason
+                    ddlAdvisoryReason.DataBind()
+            End Select
+        Catch ex As Exception
+            lblerror.Text = "AdvisoryReason: Error occurred in Processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                      sSelfPath, "fillAdvisoryReason", ErrorLevel.High)
+        End Try
+    End Sub
+    ''</added by Rushikesh on -Nov-2016 :EQSCB-176 - Add advisory resion selection on order confirmation.>
+
+    ''<Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
+    Public Sub fillAdvisoryReasononOrderPopup()
+        Try
+            Dim dt As DataTable
+            dt = New DataTable("Dummy")
+            Select Case objELNRFQ.DB_Get_Advisoryreason("Advisory_reason", ddlShare.SelectedValue, CStr(LoginInfoGV.Login_Info.EntityID), dt)
+                Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
+                    ddlAdvisoryReason.DataTextField = "Data_Value"
+                    ddlAdvisoryReason.DataValueField = "Misc1"
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+                    ddlAdvisoryReason.Items.Insert(0, New DropDownListItem("", ""))
+                    ddlAdvisoryReason.SelectedIndex = 0
+                Case Web_ELNRFQ.Database_Transaction_Response.DB_Unsuccessful, Web_ELNRFQ.Database_Transaction_Response.Db_No_Data
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+            End Select
+        Catch ex As Exception
+            lblerror.Text = "AdvisoryReason: Error occurred in Processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                      sSelfPath, "fillAdvisoryReasononOrderPopup", ErrorLevel.High)
+        End Try
+    End Sub
+    ''</Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
+    
+    
+     ''<Start | Nikhil M. on 10-Nov-2016: Added function to calculate IB Price | Shilpa P>
+
+    Public Function Get_ELN_IBPriceFromClientYeild(ByVal dblClientCyToIB As Double) As String
+        Dim dblYearBasisValue As Double
+        Dim strTypeAsset As String = String.Empty
+        Dim strCurrency As String = String.Empty
+        Try
+            strTypeAsset = "FX"
+            If chkQuantoCcy.Checked = True Then
+                strCurrency = ddlQuantoCcy.SelectedValue
+            Else
+                strCurrency = lblELNBaseCcy.Text
+            End If
+            objELNRFQ.web_GetYearBasisShortTermValues(strTypeAsset, strTypeAsset, strCurrency, dblYearBasisValue)
+            Dim lngDayDiff As Long = DateDiff(DateInterval.Day, CDate(txtSettlementDate.Value), CDate(txtMaturityDate.Value))
+            If dblClientCyToIB > 0 Then
+                Return SetNumberFormat(Math.Round(((100 * 100 * dblYearBasisValue) - (CDbl(txtUpfrontELN.Text) * 100 * dblYearBasisValue) - (dblClientCyToIB * CDbl(txtUpfrontELN.Text) * lngDayDiff)) / ((dblClientCyToIB * lngDayDiff) + (100 * dblYearBasisValue)), 2), 2)
+            Else
+                Return "0.00"
+            End If
+
+        Catch ex As Exception
+            lblerror.Text = "Get_ELN_IBPriceFromClientYeild: Error occurred in processing. "
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                         sSelfPath, "Get_ELN_IBPriceFromClientYeild", ErrorLevel.High)
+
+            Return "0.00"
+        End Try
+
+    End Function
+
+    Private Sub txtClientYieldToIB_TextChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles txtClientYieldToIB.TextChanged
+        Try
+            txtELNPrice.Text = Get_ELN_IBPriceFromClientYeild(CDbl(IIf(txtClientYieldToIB.Text <> "", txtClientYieldToIB.Text.Trim, 0)))
+        Catch ex As Exception
+            lblerror.Text = "txtClientYieldToIB_TextChanged: Error occurred in processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                         sSelfPath, "txtClientYieldToIB_TextChanged", ErrorLevel.High)
+        End Try
     End Sub
 End Class

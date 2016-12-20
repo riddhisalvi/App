@@ -2279,6 +2279,14 @@
         {
             background-color: #F5FAFD !important;
         }
+        
+          /* AshwiniP on 11-Nov-2016 */ 
+          .RadDropDownList_Default .rddlItem
+             {
+             	 margin: 0 1px;
+                 padding: 5px 6px;
+                 white-space: pre;
+             }
     </style>
 
     <script type="text/javascript">
@@ -5402,18 +5410,28 @@
                             </td>
                         </tr>
                         <%--''<Nikhil M. on 16-Sep-2016:Added For Deal Conformation >--%>
-                        <tr id="TblDealReason" runat="server" visible="false">
+                        <tr id="TblDealReason" runat="server" >
                             <td>
-                                Choose Reason
+                                Non-Best Price Reason
                             </td>
                             <td colspan="3">
                                 <%-- <asp:DropDownList ID="drpConfirmDeal" runat="server"></asp:DropDownList>--%>
                                 <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default" ID="drpConfirmDeal"
-                                    runat="server" Width="100%">
+                                    runat="server" Width="360px">                <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
                                 </telerik:RadDropDownList>
                             </td>
                         </tr>
                         <%--</Nikhil>--%>
+                         <%--''<Rushi on 09-Nov-2016:Added For Advisory reason Conformation >--%>
+                           <tr id="trAdvisoryReason" runat="server" visible="true">
+                                            <td>Advisory Reason</td>
+                                            <td colspan="3">
+                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="ddlAdvisoryReason" runat="server" Width="360px">  <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
+                                            </telerik:RadDropDownList>
+                                            </td>
+                           </tr>
+                           <%--</Rushi>--%>
+                           
                         <tr>
                             <td colspan="4" align="center">
                                 <asp:GridView ID="grdRMData" runat="server" AutoGenerateColumns="false" OnRowDataBound="OnRowDataBound"
