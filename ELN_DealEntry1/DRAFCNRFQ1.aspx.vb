@@ -214,7 +214,6 @@ Partial Public Class DRAFCNRFQ1
         Client_Yield
         ER_Created_By
         BestPrice_YN
-
     End Enum
    
     '<AvinashG. on 27-Nov-2015, FA-1190>
@@ -5180,12 +5179,34 @@ Partial Public Class DRAFCNRFQ1
                 lblerrorPopUp.Text = "Please add Allocation."
             End If
             ''</Changed by ashwiniP on 22Sept2016
-	    ''<Uncommented by Rushikesh As told by Sanchita on 5Nov16>
-            If chkDuplicateRecords() Then   ''Removed by AshwiniP on 01-Oct-2016
+
+            ''<AshwiniP on 10-Nov-16 START>
+            If ddlAdvisoryReason.SelectedValue = "" Then
+                lblerrorPopUp.Text = "Cannot proceed with order. Please select an advisory reason."
+                chk_DealValidations = False
+                Exit Function
+            Else
+                chk_DealValidations = True
+            End If
+
+            ''<END>
+
+            ''<Uncommented by Rushikesh As told by Sanchita on 5Nov16>
+            'If (Not chkUpfrontOverride.Checked) Then
+            '    If chkDuplicateRecords() Then   ''Removed by AshwiniP on 01-Oct-2016
+            '    Else
+            '        chkUpfrontOverride.Visible = True
+            '        Return False
+            '    End If
+            'Else
+            '    chk_DealValidations = True
+            '    chkUpfrontOverride.Checked = False ''For next upfront check marked as false
+            'End If
+            If chkDuplicateRecords() Then    ''Removed by AshwiniP on 01-Oct-2016
             Else
                 Return False
             End If
-	    ''</Uncommented by Rushikesh As told by Sanchita on 5Nov16>
+            ''</Uncommented by Rushikesh As told by Sanchita on 5Nov16>
             ''</ashwiniP on 22Sept2016
             '''''''Dilkhush Avinash upfront check 
             'EQBOSDEV-435 - Set Min/Max upfront for HK and non HK underlyings for notes and options
@@ -5277,6 +5298,17 @@ Partial Public Class DRAFCNRFQ1
             Dim MaxSpreadAmt As Double = 0
             Dim sExceptionType As String = ""
             Dim sRemarks As String = ""
+
+            chkUpfrontOverride.Visible = True
+            lblerrorPopUp.Text = sRemarks + "(" + FormatNumber((MinSpreadPct / 100).ToString, 2) + "% and " + FormatNumber((MaxSpreadPct / 100).ToString, 2) + "%). Please select to continue."
+
+            If chkUpfrontOverride.Checked Then
+                chk_DealValidations = True
+            Else
+                chk_DealValidations = False
+                Exit Function
+            End If
+
 
             '<AvinashG. on 13-Jul-2016: EQBOSDEV-442 - No message if no setup is found in SpecialSpread>
             Select Case oWEBMarketData.GetSpecialSpreadAndExceptionType(CStr(LoginInfoGV.Login_Info.EntityID), (CDbl(Val(txtUpfrontPopUpValue.Text.Replace(",", ""))) * 100), objdeal, SalesSpread, MinSpreadPct, _
@@ -6290,12 +6322,15 @@ Partial Public Class DRAFCNRFQ1
             sOrderComment = txtOrderCmt.Text.Trim
             ''<Start | Nikhil M. on 16-Sep-2016: Added for Deal confirmation reason>
             Dim strConfirmReason As String = ""
-            ''strConfirmReason = drpConfirmDeal.SelectedText.ToString
+            strConfirmReason = drpConfirmDeal.SelectedText.ToString
             ''<End | Nikhil M. on 16-Sep-2016: Added for Deal confirmation reason>
+            Dim strAdvisoryReason As String = ""            ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
+            strAdvisoryReason = ddlAdvisoryReason.SelectedValue.ToString
+
             Select Case objELNRFQ.web_Get_orderPlaced_with_Margin_Price_Yield(orderQuantity.Replace(",", ""), strType, strLimitPrice1, strLimitPrice2, strLimitPrice3, _
                                                                               strId, sPoolID, sRedirectOrderID, LoginInfoGV.Login_Info.LoginId, sOrderComment, strMargin, strClientPrice, _
                                                                               strClientYield, strBookingBranch, _
-                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, strConfirmReason, strPreTradeXml.ToString) ''<Nikhil M. on 16-Sep-2016: Added "strConfirmReason"  Parameter >
+                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, strConfirmReason, strPreTradeXml.ToString, strAdvisoryReason) ''<Nikhil M. on 16-Sep-2016: Added "strConfirmReason"  Parameter > ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
                 Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
                     lblerror.Text = "Order requested for RFQ " & strId
                     lblerror.ForeColor = Color.Blue
@@ -8070,6 +8105,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnJPMprice.Text <> "Order" Then
                 Session.Add("hdnPP", "JPM")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8122,6 +8161,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnHSBCPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "HSBC")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8172,6 +8215,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCSPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "CS")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8224,6 +8271,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnUBSPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "UBS")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8591,6 +8642,9 @@ Partial Public Class DRAFCNRFQ1
             chkUpfrontOverride.Checked = False
             chkUpfrontOverride.Visible = False
 
+            displayReason() ''<Ashwini P on 10-Nov-2016>
+            fillAdvisoryReasononOrderPopup() ''<Ashwini P on 10-Nov-2016>
+
             ' ''<Nikhil M. on 20-Oct-2016: Added for Hide/Visible the Allocation fgrid>
             If IsNothing(Request.QueryString("PoolID")) Then
                 grdRMData.Visible = True
@@ -8633,6 +8687,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnBNPPPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "BNPP")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8684,6 +8742,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnDBIBPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "DB")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8735,6 +8797,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnOCBCPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "OCBC")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8786,6 +8852,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCITIPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "CITI")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8836,6 +8906,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnLEONTEQPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "LEONTEQ")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8886,6 +8960,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnCOMMERZPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "COMMERZ")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -8936,6 +9014,10 @@ Partial Public Class DRAFCNRFQ1
             drpConfirmDeal.Items.Clear()
             drpConfirmDeal.ClearSelection()
             ''<End : Nikhil M. on 16-Sep-2016: Add For Dropdown>
+            ''<AshwiniP on 10-Nov-2016>
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnBAMLPrice.Text <> "Order" Then
                 Session.Add("hdnPP", "BAML")
                 btnhdnSolveSingleRequest_Click(sender, e)
@@ -14751,7 +14833,7 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
 
                         Dim tImage2 As Image = getEmailGraphImage(RFQID, ddlShareDRA2.SelectedValue, "TRDS2")
                         If tImage2 Is Nothing Then
-                            dtImageDetails.Rows.InsertAt(dtImageDetails.NewRow(), 1)
+                            dtImageDetails.Rows.InsertAt(dtImageDetails.NewRow(), 2)
                             dtImageDetails.Rows(2).Item(0) = "GraphSample2"
                             dtImageDetails.Rows(2).Item(1) = System.Web.HttpContext.Current.Server.MapPath("..\..\FinIQWebApp\ELN_DealEntry1\Images\EmailPrdHeaders\GraphNotFound.PNG")
                         Else
@@ -14771,7 +14853,7 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
 
                         Dim tImage3 As Image = getEmailGraphImage(RFQID, ddlShareDRA3.SelectedValue, "TRDS3")
                         If tImage3 Is Nothing Then
-                            dtImageDetails.Rows.InsertAt(dtImageDetails.NewRow(), 1)
+                            dtImageDetails.Rows.InsertAt(dtImageDetails.NewRow(), 3)
                             dtImageDetails.Rows(3).Item(0) = "GraphSample3"
                             dtImageDetails.Rows(3).Item(1) = System.Web.HttpContext.Current.Server.MapPath("..\..\FinIQWebApp\ELN_DealEntry1\Images\EmailPrdHeaders\GraphNotFound.PNG")
                         Else
@@ -16106,8 +16188,8 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
                     drpConfirmDeal.DataValueField = "Misc1"
                     drpConfirmDeal.DataSource = DtReason
                     drpConfirmDeal.DataBind()
-                    drpConfirmDeal.Items.Insert(0, New DropDownListItem("", ""))
-                    drpConfirmDeal.SelectedIndex = 0
+                    ''drpConfirmDeal.Items.Insert(0, New DropDownListItem("", ""))   ''AshwiniP on 10-Nov-2016
+                    drpConfirmDeal.SelectedIndex = 2                         ''Changed to select default value as Best price selected : AshwiniP 11-Nov-2016
                 Case Web_CommonFunction.Database_Transaction_Response.DB_Unsuccessful, Web_CommonFunction.Database_Transaction_Response.Db_No_Data
                     drpConfirmDeal.DataSource = DtReason
                     drpConfirmDeal.DataBind()
@@ -17558,5 +17640,30 @@ sSelfPath, "btnRedirect_ServerClick", ErrorLevel.Medium)
         End Try
 
     End Sub
+
+    ''<Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
+    Public Sub fillAdvisoryReasononOrderPopup()
+        Try
+            Dim dt As DataTable
+            dt = New DataTable("Dummy")
+            Select Case objELNRFQ.DB_Get_Advisoryreason("Advisory_reason", txtBasketShares.Text.ToString, CStr(LoginInfoGV.Login_Info.EntityID), dt)
+                Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
+                    ddlAdvisoryReason.DataTextField = "Data_Value"
+                    ddlAdvisoryReason.DataValueField = "Misc1"
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+                    ddlAdvisoryReason.Items.Insert(0, New DropDownListItem("", ""))
+                    ddlAdvisoryReason.SelectedIndex = 0
+                Case Web_ELNRFQ.Database_Transaction_Response.DB_Unsuccessful, Web_ELNRFQ.Database_Transaction_Response.Db_No_Data
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+            End Select
+        Catch ex As Exception
+            lblerror.Text = "AdvisoryReason: Error occurred in Processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                      sSelfPath, "fillAdvisoryReasononOrderPopup", ErrorLevel.High)
+        End Try
+    End Sub
+    ''</Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
 
 End Class

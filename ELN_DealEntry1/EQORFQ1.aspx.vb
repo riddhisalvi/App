@@ -3530,6 +3530,17 @@ Partial Public Class EQORFQ1
                 chk_DealValidations = True
             End If
 
+            ''<AshwiniP on 10-Nov-16 START>
+            If ddlAdvisoryReason.SelectedValue = "" Then
+                lblerrorPopUp.Text = "Cannot proceed with order. Please select an advisory reason."
+                chk_DealValidations = False
+                Exit Function
+            Else
+                chk_DealValidations = True
+            End If
+
+            ''<END>
+
             ''<AshwiniP on 19-Sept-16 START>
             dt = New DataTable("PRRating")
             Select Case objELNRFQ.DB_UnderlyingRiskRatingShare(ddlShareEQO.SelectedValue.ToString, dt)
@@ -3626,7 +3637,15 @@ Partial Public Class EQORFQ1
 
                     If isChecked AndAlso (row.Cells(2).Controls.OfType(Of FinIQ_Fast_Find_Customer)().FirstOrDefault().HiddenCustomerId).Trim = "" Or (row.Cells(2).Controls.OfType(Of FinIQ_Fast_Find_Customer)().FirstOrDefault().HiddenCustomerId).Trim = "&nbsp;" Then
                         chkUpfrontOverride.Visible = False
-                        lblerrorPopUp.Text = "Please select Customer."
+                        lblerrorPopUp.Text = "Please select a valid Customer."
+                        '<RiddhiS. on 10-Nov-2016: To clear incorrect customer code>
+                        Dim FindCustomer As FinIQ_Fast_Find_Customer
+                        FindCustomer = CType(row.FindControl("FindCustomer"), FinIQ_Fast_Find_Customer)
+                        FindCustomer.setCustName = ""
+                        FindCustomer.HiddenCustomerName = ""
+                        FindCustomer.HiddenCustomerId = ""
+                        FindCustomer.HiddenDocId = ""
+                        '</RiddhiS.>
                         Return False
                     End If
                     If isChecked AndAlso Qty_Validate(row.Cells(3).Controls.OfType(Of TextBox)().FirstOrDefault().Text.Trim) = False Then
@@ -4270,10 +4289,18 @@ Partial Public Class EQORFQ1
             Dim count As Integer = 0
             Dim sOrderComment As String = ""
             sOrderComment = txtOrderCmt.Text.Trim
+
+            ''<Start | AshwiniP on 10-nov-2016: Added for Deal confirmation reason>
+            Dim strConfirmReason As String = ""
+            strConfirmReason = drpConfirmDeal.SelectedText.ToString
+            ''<End |AshwiniP: Added for Deal confirmation reason>
+
+            Dim strAdvisoryReason As String = ""        ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
+            strAdvisoryReason = ddlAdvisoryReason.SelectedValue.ToString
             Select Case objELNRFQ.web_Get_orderPlaced_with_Margin_Price_Yield(orderQuantity.Replace(",", ""), strType, strLimitPrice1, strLimitPrice2, strLimitPrice3, _
                                                                               strId, "0", "0", LoginInfoGV.Login_Info.LoginId, sOrderComment, strMargin, strClientPrice, _
                                                                               strClientYield, strBookingBranch, _
-                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, "", strPreTradeXml.ToString) ''<Nikhil M. on 16-Sep-2016:Added Comment for Deal Confirmation Reason  >
+                                                                              strRMNameforOrderConfirm, strRMEmailIdforOrderConfirm, strConfirmReason, strPreTradeXml.ToString, strAdvisoryReason) ''<Nikhil M. on 16-Sep-2016:Added Comment for Deal Confirmation Reason  >  ''<AshwiniP on 09-Nov-2016 added new parameter to save advisory reason>
                 Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
 
                     ''KBM on 19-Feb-2014 message moved here to show after trade proceed YN update
@@ -5181,6 +5208,12 @@ Partial Public Class EQORFQ1
             '' RestoreAll()
             chkConfirmDeal.Visible = False ''<Nikhil M. on 09-Sep-2016:Added >
             chkConfirmDeal.Checked = False ''<Nikhil M. on 09-Sep-2016:Added >
+            ''<AshwiniP on 10-Nov-2016>
+            drpConfirmDeal.Items.Clear()
+            drpConfirmDeal.ClearSelection()
+            ddlAdvisoryReason.Items.Clear()
+            ddlAdvisoryReason.ClearSelection()
+            ''</AshwiniP on 10-Nov-2016>
             If btnBNPPPrice.Text <> "Order" Then
 
                 'If tabContainer.ActiveTabIndex = 0 Then
@@ -5426,6 +5459,9 @@ Partial Public Class EQORFQ1
                     'AvinashG on 5Nov2015, setting RFQ Date, COde for more issuers to be done
 
             End Select
+
+            displayReason() ''<Ashwini P on 10-Nov-2016>
+            fillAdvisoryReasononOrderPopup() ''<Ashwini P on 10-Nov-2016>
 
             lblerrorPopUp.Text = ""
             chkUpfrontOverride.Checked = False
@@ -11766,5 +11802,51 @@ Partial Public Class EQORFQ1
         End Try
     End Sub
 
-
+    ''<Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
+    Public Sub fillAdvisoryReasononOrderPopup()
+        Try
+            Dim dt As DataTable
+            dt = New DataTable("Dummy")
+            Select Case objELNRFQ.DB_Get_Advisoryreason("Advisory_reason", ddlShareEQO.SelectedValue, CStr(LoginInfoGV.Login_Info.EntityID), dt)
+                Case Web_ELNRFQ.Database_Transaction_Response.Db_Successful
+                    ddlAdvisoryReason.DataTextField = "Data_Value"
+                    ddlAdvisoryReason.DataValueField = "Misc1"
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+                    ddlAdvisoryReason.Items.Insert(0, New DropDownListItem("", ""))
+                    ddlAdvisoryReason.SelectedIndex = 0
+                Case Web_ELNRFQ.Database_Transaction_Response.DB_Unsuccessful, Web_ELNRFQ.Database_Transaction_Response.Db_No_Data
+                    ddlAdvisoryReason.DataSource = dt
+                    ddlAdvisoryReason.DataBind()
+            End Select
+        Catch ex As Exception
+            lblerror.Text = "AdvisoryReason: Error occurred in Processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                      sSelfPath, "fillAdvisoryReasononOrderPopup", ErrorLevel.High)
+        End Try
+    End Sub
+    ''</Ashwini P on 10-Nov-2016: Add advisory reason on order popup>
+    ''< Start | AshwiniP. on 10-Nov-2016: Added>
+    Private Function displayReason() As Boolean
+        Try
+            Dim DtReason As DataTable
+            DtReason = New DataTable("Dummy")
+            Select Case WebCommonFunction.DB_Get_Common_Data("EQC_Dealconfirmation_reason", DtReason)
+                Case Web_CommonFunction.Database_Transaction_Response.Db_Successful
+                    drpConfirmDeal.DataTextField = "Data_Value"
+                    drpConfirmDeal.DataValueField = "Misc1"
+                    drpConfirmDeal.DataSource = DtReason
+                    drpConfirmDeal.DataBind()
+                    ''drpConfirmDeal.Items.Insert(0, New DropDownListItem("", ""))
+                    drpConfirmDeal.SelectedIndex = 2                     ''Changed to select default value as Best price selected : AshwiniP 11-Nov-2016
+                Case Web_CommonFunction.Database_Transaction_Response.DB_Unsuccessful, Web_CommonFunction.Database_Transaction_Response.Db_No_Data
+                    drpConfirmDeal.DataSource = DtReason
+                    drpConfirmDeal.DataBind()
+            End Select
+        Catch ex As Exception
+            lblerror.Text = "displayReason: Error occurred in Processing."
+            LogException(LoginInfoGV.Login_Info.LoginId, "Exception:" + ex.Message.ToString, LogType.FnqError, ex, _
+                      sSelfPath, "displayReason", ErrorLevel.High)
+        End Try
+    End Function
 End Class

@@ -2097,7 +2097,14 @@
             {
             	background-color: #F5FAFD !important;
             }
-             
+            
+            /* AshwiniP on 11-Nov-2016 */ 
+          .RadDropDownList_Default .rddlItem
+             {
+             	 margin: 0 1px;
+                 padding: 5px 6px;
+                 white-space: pre;
+             }
 
 
     </style>
@@ -2295,7 +2302,7 @@
                                                                 <asp:Label ID="lblELNPrice" runat="server" CssClass="lbl" Text="IB Price (%)"></asp:Label>
                                                             </td>
                                                             <td>
-                                                                <asp:TextBox ID="txtELNPrice" runat="server" AutoPostBack="true" CssClass="txt" Style="text-align: right"
+                                                                <asp:TextBox ID="txtELNPrice" runat="server" AutoPostBack="true" Enabled="false"  CssClass="txt" Style="text-align: right"
                                                                     Width="120px" TabIndex="5"></asp:TextBox>
                                                             </td>
                                                             <td>
@@ -2386,6 +2393,19 @@
                                                             </td>
                                                             
                                                         </tr>
+                                                        
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>
+                                                                <asp:Label ID="lblClientYieldToIB" runat="server" Visible="false"  CssClass="lbl" Text="Client Yield(%)"></asp:Label></td>
+                                                            <td>
+                                                                <asp:TextBox ID="txtClientYieldToIB" runat="server"  Visible="false"  Style="text-align: right" Width="120px" AutoPostBack="true" CssClass="txt" ></asp:TextBox>
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        
                                                     </table>
                                                 </asp:Panel>
                                             </ContentTemplate>
@@ -4639,15 +4659,25 @@
                         </tr>--%>
                         
                                <%--''<Nikhil M. on 16-Sep-2016:Added For Deal Conformation >--%>
-                           <tr id="TblDealReason" runat="server" visible="false">
-                                            <td>Choose Reason</td>
+                           <tr id="TblDealReason" runat="server" >
+                                            <td>Non-Best Price Reason</td>
                                             <td colspan="3">
                                            <%-- <asp:DropDownList ID="drpConfirmDeal" runat="server"></asp:DropDownList>--%>
-                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="drpConfirmDeal" runat="server" Width="100%">
+                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="drpConfirmDeal" runat="server" Width="360px">  <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
                                             </telerik:RadDropDownList>
                                             </td>
                            </tr>
                            <%--</Nikhil>--%>
+                           
+                           <%--''<Rushi on 09-Nov-2016:Added For Advisory reason Conformation >--%>
+                           <tr id="trAdvisoryReason" runat="server" visible="true">
+                                            <td>Advisory Reason</td>
+                                            <td colspan="3">
+                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="ddlAdvisoryReason" runat="server" Width="360px">  <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
+                                            </telerik:RadDropDownList>
+                                            </td>
+                           </tr>
+                           <%--</Rushi>--%>
 						   
 						    <tr>
                             <td colspan="4" align="center">
@@ -4676,14 +4706,14 @@
                                                 </telerik:RadDropDownList>--%>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="CIF/PAN" ItemStyle-Width="150" ItemStyle-CssClass ="grayBorder" HeaderStyle-CssClass ="grayBorder">
+                                        <asp:TemplateField HeaderText="CIF/PAN" ItemStyle-Width="100" ItemStyle-CssClass ="grayBorder" HeaderStyle-CssClass ="grayBorder">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblCIFPAN" runat="server" Text='<%# Eval("Account_Number") %>'></asp:Label>
                                                <%-- <asp:TextBox ID="txtAccNo" runat="server" Text='<%# Eval("Account_Number") %>' Visible="false"
                                                     CssClass="txt" Width="92%" OnTextChanged="txtBox_onTextChanged" AutoPostBack="True"></asp:TextBox>--%>
                                                    
                                                      <uc2:FinIQ_Fast_Find_Customer ID="FindCustomer" runat="server" DoPostBack="true" OnCustomer_Selected="CustomerSelected"
-                                                                                                    EnableTheming="true"  SetWidth="98" />
+                                                                                                    EnableTheming="true"  SetWidth="50" />
                                                     
                                                  
                                                 <%--

@@ -2305,7 +2305,9 @@
          .BestPriceHighlight
             {
             	background-color: #F5FAFD !important;
-            }  
+              /* AshwiniP on 11-Nov-2016 */ 
+          .RadDropDownList_Default .rddlItem
+                 padding: 5px 6px;
 
     </style>
 
@@ -4953,6 +4955,27 @@
                             </td>
                         </tr>
                         
+                         <%--''<AshwiniP on 10-nov-2016:Added For Deal Conformation >--%>
+                           <tr id="TblDealReason" runat="server" >
+                                            <td>Non-Best Price Reason</td>
+                                            <td colspan="3">
+                                           <%-- <asp:DropDownList ID="drpConfirmDeal" runat="server"></asp:DropDownList>--%>
+                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="drpConfirmDeal" runat="server" Width="360px">  <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
+                                            </telerik:RadDropDownList>
+                                            </td>
+                           </tr>
+                           <%--</AshwiniP>--%>
+                        
+                         <%--''<Rushi on 09-Nov-2016:Added For Advisory reason Conformation >--%>
+                           <tr id="trAdvisoryReason" runat="server" visible="true">
+                                            <td>Advisory Reason</td>
+                                            <td colspan="3">
+                                            <telerik:RadDropDownList CssClass="RadDropDownList RadDropDownList_Default"  ID="ddlAdvisoryReason" runat="server" Width="360px">  <%--AshwiniP on 11-Nov-2016:To keep order popup width constant--%>
+                                            </telerik:RadDropDownList>
+                                            </td>
+                           </tr>
+                           <%--</Rushi>--%>
+                           
                        <%-- Added by Chitralekha M on 20-Sept-16--%>
                         <tr>
                             <td colspan="4" align="center">

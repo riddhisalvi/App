@@ -4903,6 +4903,24 @@ Partial Public Class DRAFCNRFQ1
     Protected WithEvents drpConfirmDeal As Global.Telerik.Web.UI.RadDropDownList
 
     '''<summary>
+    '''trAdvisoryReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trAdvisoryReason As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''ddlAdvisoryReason control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlAdvisoryReason As Global.Telerik.Web.UI.RadDropDownList
+
+    '''<summary>
     '''grdRMData control.
     '''</summary>
     '''<remarks>
